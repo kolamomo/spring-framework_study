@@ -42,13 +42,16 @@ public class SimpleAliasRegistry implements AliasRegistry {
 
 
 	@Override
+	//注册别名，将别名注册到全局的aliasMap中
 	public void registerAlias(String name, String alias) {
 		Assert.hasText(name, "'name' must not be empty");
 		Assert.hasText(alias, "'alias' must not be empty");
+		//如果alias与beanName相同，则不进行注册，并删除aliasMap中已存在的alias
 		if (alias.equals(name)) {
 			this.aliasMap.remove(alias);
 		}
 		else {
+			//alias覆盖处理，如果alias已经存在并指向了另一个不同的beanName，则抛出异常
 			if (!allowAliasOverriding()) {
 				String registeredName = this.aliasMap.get(alias);
 				if (registeredName != null && !registeredName.equals(name)) {
@@ -56,7 +59,9 @@ public class SimpleAliasRegistry implements AliasRegistry {
 							name + "': It is already registered for name '" + registeredName + "'.");
 				}
 			}
+			//alias循环检查
 			checkForAliasCircle(name, alias);
+			//注册别名
 			this.aliasMap.put(alias, name);
 		}
 	}
@@ -149,6 +154,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	 * @param name the user-specified name
 	 * @return the transformed name
 	 */
+	//如果name是别名，则转换为其对应的beanName
 	public String canonicalName(String name) {
 		String canonicalName = name;
 		// Handle aliasing...

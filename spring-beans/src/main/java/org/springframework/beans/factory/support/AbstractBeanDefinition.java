@@ -162,7 +162,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private ConstructorArgumentValues constructorArgumentValues;
 
-	private MutablePropertyValues propertyValues;
+	private MutablePropertyValues propertyValues;  //存储bean中定义的属性
 
 	private MethodOverrides methodOverrides = new MethodOverrides();
 
