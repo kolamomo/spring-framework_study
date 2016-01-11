@@ -67,6 +67,8 @@ public abstract class BeanFactoryUtils {
 	 * @return the transformed name
 	 * @see BeanFactory#FACTORY_BEAN_PREFIX
 	 */
+	//去除factoryBean的修饰符
+	//eg: name="&weibo"
 	public static String transformedBeanName(String name) {
 		Assert.notNull(name, "'name' must not be null");
 		String beanName = name;

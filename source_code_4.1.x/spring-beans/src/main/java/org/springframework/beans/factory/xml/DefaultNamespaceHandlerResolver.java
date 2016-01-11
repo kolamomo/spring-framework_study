@@ -111,24 +111,33 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	 */
 	@Override
 	public NamespaceHandler resolve(String namespaceUri) {
+		//获取所有的命名空间配置的映射集合
+		//如果该命名空间配置做过解析，则集合中存放的是该命名空间对应的namespaceHandler
+		//如果未做过解析，则存放的是类路径
 		Map<String, Object> handlerMappings = getHandlerMappings();
+		//根据命名空间找到对应信息
 		Object handlerOrClassName = handlerMappings.get(namespaceUri);
 		if (handlerOrClassName == null) {
 			return null;
 		}
+		//如果已经做过解析，则直接返回
 		else if (handlerOrClassName instanceof NamespaceHandler) {
 			return (NamespaceHandler) handlerOrClassName;
 		}
+		//如果未做过解析，则先进行解析，再返回结果
 		else {
 			String className = (String) handlerOrClassName;
 			try {
+				//使用反射从类路径获取Class类
 				Class<?> handlerClass = ClassUtils.forName(className, this.classLoader);
 				if (!NamespaceHandler.class.isAssignableFrom(handlerClass)) {
 					throw new FatalBeanException("Class [" + className + "] for namespace [" + namespaceUri +
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
+				//初始化类
 				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
 				namespaceHandler.init();
+				//将namespaceHandler注册到命名空间配置的映射集合中
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
 			}
@@ -146,6 +155,7 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	/**
 	 * Load the specified NamespaceHandler mappings lazily.
 	 */
+	//获取命名空间配置的映射集合
 	private Map<String, Object> getHandlerMappings() {
 		if (this.handlerMappings == null) {
 			synchronized (this) {
