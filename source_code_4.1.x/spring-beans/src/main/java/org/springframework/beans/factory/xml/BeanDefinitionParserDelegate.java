@@ -608,7 +608,8 @@ public class BeanDefinitionParserDelegate {
 	 * @param containingBean containing bean definition
 	 * @return a bean definition initialized according to the bean element attributes
 	 */
-	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
+	public AbstractBeanDefinition
+	parseBeanDefinitionAttributes(Element ele, String beanName,
 			BeanDefinition containingBean, AbstractBeanDefinition bd) {
 		//解析scope属性
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
