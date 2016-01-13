@@ -106,7 +106,8 @@ public class HelloTest {
 				initApplicationEventMulticaster();  //初始化上下文中的事件机制
 				onRefresh();  //初始化其他特殊的bean
 				registerListeners();  //注册Listeners
-				finishBeanFactoryInitialization(beanFactory); //实例化bean
+				//实例化所有的非lazy-init的bean
+				finishBeanFactoryInitialization(beanFactory); 
 				finishRefresh();  //发布容器事件
 			}
 
@@ -780,11 +781,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 ### 3.2 解析自定义标签
 
 扩展spring自定义标签配置需要以下几个步骤：  
-创建一个需要扩展的组件  
+创建自定义标签对应的JavaBean
 定义一个xsd文件描述组件内容     
 创建一个java文件，实现BeanDefinitionParser接口，用于解析xsd文件中的定义和组件定义  
 创建一个java文件，扩展NamespaceHandlerSupport，将组件注册到Spring容器  
-编写Spring.handlers和Spring.schemas文件  
+编写spring.handlers和spring.schemas文件  
 
 
 ```
@@ -853,14 +854,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
-		// Detect a LoadTimeWeaver and prepare for weaving, if found.
 		if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
-			// Set a temporary ClassLoader for type matching.
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
-		// Register default environment beans.
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
