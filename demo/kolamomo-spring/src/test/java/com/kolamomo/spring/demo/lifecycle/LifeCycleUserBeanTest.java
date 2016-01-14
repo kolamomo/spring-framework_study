@@ -19,34 +19,35 @@ public class LifeCycleUserBeanTest {
 }
 
 /*
-一月 13, 2016 7:36:13 下午 org.springframework.context.support.ClassPathXmlApplicationContext prepareRefresh
-信息: Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@5577140b: startup date [Wed Jan 13 19:36:13 CST 2016]; root of context hierarchy
-一月 13, 2016 7:36:13 下午 org.springframework.beans.factory.xml.XmlBeanDefinitionReader loadBeanDefinitions
-信息: Loading XML bean definitions from class path resource [lifecycle/applicationContext.xml]
+//输出结果如下：
+//bean的生命周期包含三类方法：
+//1. bean自身的方法
+//2. bean级生命周期的接口方法
+//3. beanFactory级生命周期的接口方法
+
+//调用构造函数
 3 --- call MyBeanFactoryPostProcessor.postProcessBeanFactory() name=TypedStringValue: value [kolamomo], target type [null] ---
 3 --- call InstantiationAwareBeanPostProcessor.postProcessBeforeInstantiation() ---
 1 --- call User constructor ---
 3 --- call InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation() ---
-一月 13, 2016 7:36:14 下午 org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
-信息: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1a968a59: defining beans [user,myInstanticationAwareBeanPostProcessor,myBeanPostProcessor,myBeanFactoryPostProcessor]; root of factory hierarchy
 
+//调用set方法
 3 --- call InstantiationAwareBeanPostProcessor.postProcessProertyValues() ---
 1 --- call User set method: setName() ---
 2 --- call BeanNameAware.setBeanName() ---
 2 --- call BeanFactoryAware.setBeanFactory() ---
 2 --- call ApplicationContextAware.setApplicationContext() ---
 
+//调用init方法
 3 --- call MyBeanPostProcessor.postProcessBeforeInstantiation() name=kolamomo ---
 2 --- call InitializingBean.afterPropertiesSet() ---
 1 --- call User init-method: init() ---
 3 --- call MyBeanPostProcessor.postProcessAfterInstantiation() name=kolamomo ---
 
+//使用bean
 user id = 1, name = kolamomo
 
-一月 13, 2016 7:36:14 下午 org.springframework.context.support.ClassPathXmlApplicationContext doClose
-信息: Closing org.springframework.context.support.ClassPathXmlApplicationContext@5577140b: startup date [Wed Jan 13 19:36:13 CST 2016]; root of context hierarchy
-一月 13, 2016 7:36:14 下午 org.springframework.beans.factory.support.DefaultListableBeanFactory destroySingletons
-信息: Destroying singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1a968a59: defining beans [user,myInstanticationAwareBeanPostProcessor,myBeanPostProcessor,myBeanFactoryPostProcessor]; root of factory hierarchy
+//容器销毁，调用destroy方法
 2 --- call DisposableBean.destroy() ---
 1 --- call User destroy-method: destroyMethod() ---
 */

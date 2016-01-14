@@ -311,6 +311,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dependsOnBean + "'");
 						}
+						//注册bean的依赖关系，以便在destroy时先destory依赖的bean
 						registerDependentBean(dependsOnBean, beanName);
 						getBean(dependsOnBean);
 					}
