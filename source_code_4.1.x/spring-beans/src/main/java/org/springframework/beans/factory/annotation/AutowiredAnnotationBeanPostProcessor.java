@@ -235,8 +235,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		}
 	}
 
-	@Override
+	//从标记了autowired注释的构造方法中选取候选的构造方法
 	public Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, final String beanName) throws BeansException {
+		//处理lookup-method方式的注入
 		if (!this.lookupMethodsChecked.contains(beanName)) {
 			ReflectionUtils.doWithMethods(beanClass, new ReflectionUtils.MethodCallback() {
 				@Override
@@ -264,10 +265,12 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			synchronized (this.candidateConstructorsCache) {
 				candidateConstructors = this.candidateConstructorsCache.get(beanClass);
 				if (candidateConstructors == null) {
+					//获取beanClass所定义的全部构造方法
 					Constructor<?>[] rawCandidates = beanClass.getDeclaredConstructors();
 					List<Constructor<?>> candidates = new ArrayList<Constructor<?>>(rawCandidates.length);
 					Constructor<?> requiredConstructor = null;
 					Constructor<?> defaultConstructor = null;
+					//从全部定义的构造方法中选取标记了autowired注释的构造方法
 					for (Constructor<?> candidate : rawCandidates) {
 						AnnotationAttributes ann = findAutowiredAnnotation(candidate);
 						if (ann != null) {
@@ -282,6 +285,8 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 										"Autowired annotation requires at least one argument: " + candidate);
 							}
 							boolean required = determineRequiredStatus(ann);
+							//构造函数只允许一个autowired注释标记了required=true
+							//标记了required=true时，如果自动注入不能满足，会抛出异常
 							if (required) {
 								if (!candidates.isEmpty()) {
 									throw new BeanCreationException(beanName,
@@ -293,6 +298,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 							}
 							candidates.add(candidate);
 						}
+						//设置无参的默认构造函数
 						else if (candidate.getParameterTypes().length == 0) {
 							defaultConstructor = candidate;
 						}

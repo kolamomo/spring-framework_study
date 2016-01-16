@@ -578,15 +578,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 				else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
 					String[] dependentBeans = getDependentBeans(beanName);
+					//获取所有依赖于当前bean的beanName
 					Set<String> actualDependentBeans = new LinkedHashSet<String>(dependentBeans.length);
 					for (String dependentBean : dependentBeans) {
-						//检测依赖
+						//从缓存中移除依赖于当前bean的bean
 						if (!removeSingletonIfCreatedForTypeCheckOnly(dependentBean)) {
 							actualDependentBeans.add(dependentBean);
 						}
 					}
-					//bean创建后其所依赖的bean一定是已经创建的
-					//actualDependentBeans不为空表示当前bean创建后其依赖的bean没有全部创建完，也就是说存在循环依赖
 					if (!actualDependentBeans.isEmpty()) {
 						throw new BeanCurrentlyInCreationException(beanName,
 								"Bean with name '" + beanName + "' has been injected into other beans [" +
@@ -1070,7 +1069,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Need to determine the constructor...
-		//未完成构造函数的解析，则先根据参数解析构造函数，再进行实例化
+		//未完成构造函数的解析，需要先查找容器中是否有注册SmartInstantiationAwareBeanPostProcessor
+		//如果有注册，则调用该接口的determineCandidateConstructors方法获取候选构造方法
+		//构造函数注入的注释autowired就是在这里进行解析的
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null ||
 				mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR ||
@@ -1463,6 +1464,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		int dependencyCheck = mbd.getDependencyCheck();
 		for (PropertyDescriptor pd : pds) {
 			if (pd.getWriteMethod() != null && !pvs.contains(pd.getName())) {
+				//是否是基本类型
 				boolean isSimple = BeanUtils.isSimpleProperty(pd.getPropertyType());
 				boolean unsatisfied = (dependencyCheck == RootBeanDefinition.DEPENDENCY_CHECK_ALL) ||
 						(isSimple && dependencyCheck == RootBeanDefinition.DEPENDENCY_CHECK_SIMPLE) ||

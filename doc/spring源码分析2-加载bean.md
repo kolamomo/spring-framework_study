@@ -217,7 +217,7 @@ earlySingletonObjects和singletonFactories主要用于解决单例模式bean的�
 		}
 		return (singletonObject != NULL_OBJECT ? singletonObject : null);
 	}
-	
+
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>(64);
 
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<String, ObjectFactory<?>>(16);
@@ -256,7 +256,7 @@ earlySingletonObjects和singletonFactories主要用于解决单例模式bean的�
 		return (curVal != null &&
 				(curVal.equals(beanName) || (curVal instanceof Set && ((Set<?>) curVal).contains(beanName))));
 	}
-	
+
 	private final ThreadLocal<Object> prototypesCurrentlyInCreation =
 		new NamedThreadLocal<Object>("Prototype beans currently in creation");
 ```
@@ -288,7 +288,7 @@ earlySingletonObjects和singletonFactories主要用于解决单例模式bean的�
 ```
 
 getMergedLocalBeanDefinition()用于获取beanName对应的RootBeanDefinition。  
-这里使用一个map：mergedBeanDefinitions来保存beanName对应的rootBeanDefinition，每次先从map中取，取不到再取新建，建好后再将结果保存到map中。 
+这里使用一个map：mergedBeanDefinitions来保存beanName对应的rootBeanDefinition，每次先从map中取，取不到再取新建，建好后再将结果保存到map中。
 
 
 ```
@@ -301,7 +301,7 @@ getMergedLocalBeanDefinition()用于获取beanName对应的RootBeanDefinition。
 		}
 		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));
 	}
-	
+
 	protected RootBeanDefinition getMergedBeanDefinition(
 		String beanName, BeanDefinition bd, BeanDefinition containingBd)
 		throws BeanDefinitionStoreException {
@@ -453,7 +453,7 @@ singleton模式的bean要从对象工厂ObjectFactory中进行获取。
 			throw new IllegalStateException("Singleton '" + beanName + "' isn't currently in creation");
 		}
 	}
-	
+
 	//将创建好的singleton模式的bean实例加入map中，并将beanName从用于提前暴露的map中移除。
 	protected void addSingleton(String beanName, Object singletonObject) {
 		synchronized (this.singletonObjects) {
@@ -625,5 +625,3 @@ getObjectForBeanInstance()方法对factoryBean类型的bean进行处理。
 		}
 	}
 ```
-
-

@@ -10,7 +10,7 @@
 
 ```
 package com.kolamomo.spring.demo.service;  
-  
+
 public interface HelloApi {  
     public void sayHello();  
 }  
@@ -19,13 +19,13 @@ public interface HelloApi {
 
 ```
 package com.kolamomo.spring.demo.service;  
-  
+
 public class HelloApiImpl implements HelloApi {  
     public void sayHello(){  
         System.out.println("hello world");  
     }  
-} 
-``` 
+}
+```
 
 2) 配置applicationContext
 
@@ -37,21 +37,21 @@ public class HelloApiImpl implements HelloApi {
     xsi:schemaLocation="    
 http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
 http://www.springframework.org/schema/context                http://www.springframework.org/schema/context/spring-context-3.0.xsd">  
-  
+
     <bean id="hello" class="com.kolamomo.spring.demo.service.impl">  
     </bean>  
- </beans> 
+ </beans>
 ```
 
 3) 测试
 
 ```
 package com.kolamomo.spring.demo.service;  
-  
+
 import org.junit.Test;  
 import org.springframework.context.ApplicationContext;  
 import org.springframework.context.support.ClassPathXmlApplicationContext;  
-  
+
 public class HelloTest {  
     @Test  
     public void testHelloWorld(){  
@@ -107,7 +107,7 @@ public class HelloTest {
 				onRefresh();  //初始化其他特殊的bean
 				registerListeners();  //注册Listeners
 				//实例化所有的非lazy-init的bean
-				finishBeanFactoryInitialization(beanFactory); 
+				finishBeanFactoryInitialization(beanFactory);
 				finishRefresh();  //发布容器事件
 			}
 
@@ -117,7 +117,7 @@ public class HelloTest {
 			}
 		}
 	}
-	
+
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		refreshBeanFactory();  
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
@@ -151,7 +151,7 @@ public class HelloTest {
 	}
 
 ```
-	
+
 ```
 //AbstractXmlApplicationContext
 
@@ -166,7 +166,7 @@ public class HelloTest {
 		initBeanDefinitionReader(beanDefinitionReader);
 		loadBeanDefinitions(beanDefinitionReader);
 	}
-	
+
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
@@ -237,7 +237,7 @@ public class HelloTest {
 			}
 		}
 	}
-	
+
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 		try {
@@ -248,14 +248,14 @@ public class HelloTest {
 		} catch (BeanDefinitionStoreException ex) {
 			throw ex;
 		} catch ( ) {
-		} 
+		}
 		...
 	}
 ```
 
 ```
 //XmlBeanDefinitionReader.java
-	
+
 		protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
 		return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
 				getValidationModeForResource(resource), isNamespaceAware());
@@ -275,7 +275,7 @@ public class HelloTest {
 		return builder.parse(inputSource);
 	}
 
-```	
+```
 
 ```
 //DocumentBuilderImpl.java
@@ -379,7 +379,7 @@ public class HelloTest {
 
 ```
 //DefaultBeanDefinitionDocumentReader.java
-	
+
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			//对import标签的处理
@@ -563,7 +563,7 @@ processAliasRegistration()用于处理alias别名，把结果放在aliasMap中�
 
 		//检验beanName的唯一性，使用set记录所有的beanName
 		if (containingBean == null) {
-			checkNameUniqueness(beanName, aliases, ele); 
+			checkNameUniqueness(beanName, aliases, ele);
 		}
 
 		//解析bean中的所有属性，将其封装到beanDefinition中
@@ -651,7 +651,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	private String description;
 	//bean定义对应的资源
 	private Resource resource;
-	
+
 	...
 }
 ```
@@ -829,8 +829,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 ```
-	
-```	
+
+```
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		//设置beanFactory的classLoader为当前context的classLoader
 		beanFactory.setBeanClassLoader(getClassLoader());
@@ -871,4 +871,3 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 ```
-
